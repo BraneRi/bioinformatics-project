@@ -28,9 +28,3 @@ vector<int> compute_LCP_from_BWT(vector<int> BWT) {
 tuple<vector<int>, vector<int>> create_bit_vectors(int k, vector<int> BWT, vector<De_Bruijn_Node> G, queue<int> Q) {
     vector<int> LCP = compute_LCP_from_BWT(BWT);
 };
-
-int main () {
-    wt_int wt = wt_int();
-
-    return 0;
-}
