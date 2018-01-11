@@ -7,6 +7,7 @@ using namespace std;
 #include "sais-master/sais.hh"
 #include <algorithm>
 #include <string>
+#include <sdsl/lcp.hpp>
 
 string parse_input_fasta_file(string filepath) {
     ifstream infile(filepath.c_str());
@@ -75,5 +76,11 @@ int main(int argc, char* argv[]) {
 
     string BWT = generate_BWT(S);
     cout << "BWT: \n" << BWT << "\n";
+
+    lcp_bitcompressed<> lcp;
+    construct_im(lcp, S, 1);
+
+    cout << "LCP=" <<lcp;
+
     return 0;
 }

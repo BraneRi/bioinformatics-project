@@ -5,7 +5,8 @@
 #include "models.h"
 using namespace std;
 
-vector<int> compute_LCP_from_BWT(vector<int> BWT) {
+vector<int> compute_LCP_from_BWT(string BWT) {
+    /*
     n = BWT.size();
     vector<int> LCP = vector<int>();
     LCP[0] = -1;
@@ -22,9 +23,13 @@ vector<int> compute_LCP_from_BWT(vector<int> BWT) {
 
     }
 
-    return LCP;
+    return LCP;*/
+
+    cout << "uso sam";
+
+    return null;
 }
 
-tuple<vector<int>, vector<int>> create_bit_vectors(int k, vector<int> BWT, vector<De_Bruijn_Node> G, queue<int> Q) {
+tuple create_bit_vectors(int k, vector<int> BWT, vector<De_Bruijn_Node> G, queue<int> Q) {
     vector<int> LCP = compute_LCP_from_BWT(BWT);
 };
