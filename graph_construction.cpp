@@ -1,5 +1,5 @@
 #include "graph_construction.h"
-
+#include<string>
 /**
  * Kasai et al. algotithm for creating suffix longest common prefix array from
  * suffix array
@@ -34,12 +34,34 @@ void compute_LCP_from_SA(const int* SA, string S, int n, int LCP[]) {
     }
 };
 
+void compute_C_array(string BWT, int C[]){
+
+    int K[256] = {0}; // K[0] = $, K[1] = #, K[2] = A, K[3] = C, K[4] = G, K[5] = T
+
+
+    for(int i = 0, size = BWT.length(); i < size; i++){
+      if(BWT[i] == '$'){
+        K[0]++;
+      }else if(BWT[i] == '#'){
+        K[1]++;
+      }else{
+        K[BWT[i]]++;
+      }
+  }
+
+  for(int i = 0; i < 256; i++){
+      C[i + 1] = C[i] + K[i];
+    }
+
+};
+
+
 /**
  * Algorithm 1 from paper which creates two bit vectors Br and Bl
  * */
 void create_bit_vectors(int n, int k, const int* LCP, string BWT, De_Bruijn_Node G[], int Q[], list<int*> Br_and_Bl) {
-    int C[n];
-    // generate C
+    int C[256] = {0};
+    compute_C_array(BWT, C);
 
     int Br[n] = {};
     int Bl[n] = {};
@@ -104,7 +126,7 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, De_Bruijn_Node
             open = true;
         }
     }
-
+  
     Br_and_Bl.push_front(Br);
     Br_and_Bl.push_back(Bl);
 };
