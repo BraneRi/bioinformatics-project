@@ -94,23 +94,24 @@ int main(int argc, char* argv[]) {
 
     string parsed_input = parse_input_fasta_file(argv[1]);
     int n = parsed_input.length();
-    cout << "Parsed input:\n" << parsed_input << "\n\n";
 
     char S[n];
     prepare_input_string(parsed_input, n, S);
     const int* SA = generate_SA(S);
 
     string BWT = generate_BWT(S, SA);
-    cout << "BWT: \n" << BWT << "\n\n";
 
     int LCP[n];
     compute_LCP_from_SA(SA, S, n, LCP);
-    cout << "LCP: \n";
 
-    for(int i=0;i<=n;i++) {
-        cout << LCP[i];
-    }
+/*
+    list<int*> Br_and_Bl;
+    De_Bruijn_Node G[];
+    int Q[];
+    create_bit_vectors(n, 3, LCP, BWT, G, Q, Br_and_Bl);
 
-    cout << "\n";
+    int Br[] = Br_and_Bl[0];
+    int Bl[] = Br_and_Bl[1];*/
+
     return 0;
 }
