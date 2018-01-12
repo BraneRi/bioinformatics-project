@@ -38,7 +38,7 @@ void compute_LCP_from_SA(const int* SA, string S, int n, int LCP[]) {
  * Algorithm 1 from paper which creates two bit vectors Br and Bl
  * */
 void create_bit_vectors(int n, int k, const int* LCP, string BWT, De_Bruijn_Node G[], int Q[], list<int[]> Br_and_Bl) {
-    int C[];
+    int C[n];
     // generate C
 
     int Br[n] = {};
@@ -54,7 +54,7 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, De_Bruijn_Node
         C[BWT[i - 1]]++;
         if (LCP[i] >= k) {
             open = true;
-            if (LCP[i] = k) {
+            if (LCP[i] == k) {
                 kIndex = i;
             }
         } else {
@@ -64,7 +64,7 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, De_Bruijn_Node
                     Br[i-1] = 1;
 
                     // TODO: kako se točno stvara jedan čvor i koje argumente gdje prima??
-                    De_Bruijn_Node newNode = new De_Bruijn_Node(k, lb, i - lb, );
+                    De_Bruijn_Node newNode = De_Bruijn_Node(k, lb, i - lb, true);
                     G[counter] = newNode;
                 }
             }
