@@ -9,6 +9,7 @@ using namespace std;
 #include <string>
 #include "graph_construction.h"
 
+
 string parse_input_fasta_file(string filepath) {
     ifstream infile(filepath.c_str());
 
@@ -39,7 +40,7 @@ string parse_input_fasta_file(string filepath) {
 
 
 /**
- * This change is made because 0 and 1 are 
+ * This change is made because 0 and 1 are
  * positioned earlier in alphabet
  * */
 void prepare_input_string(string parsed_input, int n, char S[]) {
@@ -68,7 +69,7 @@ const int* generate_SA(string S) {
 }
 
 /**
- * Method uses suffix array to create BWT by 
+ * Method uses suffix array to create BWT by
  * formula BWT[i] = S[SA[i] - 1]
  */
 string generate_BWT(string S, const int* SA) {
@@ -76,7 +77,7 @@ string generate_BWT(string S, const int* SA) {
     for(int i=0; i < S.length(); i++) {
         if (SA[i] == 0) {
             BWT += "$";
-        } else if(S[SA[i] - 1] == '1') {
+     } else if(S[SA[i] - 1] == '1') {
             BWT += "#";
         } else {
             BWT += S[SA[i] - 1];
@@ -85,6 +86,8 @@ string generate_BWT(string S, const int* SA) {
 
     return BWT;
 }
+
+
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -104,14 +107,30 @@ int main(int argc, char* argv[]) {
     int LCP[n];
     compute_LCP_from_SA(SA, S, n, LCP);
 
-/*
     list<int*> Br_and_Bl;
     De_Bruijn_Node G[];
     int Q[];
     create_bit_vectors(n, 3, LCP, BWT, G, Q, Br_and_Bl);
 
     int Br[] = Br_and_Bl[0];
-    int Bl[] = Br_and_Bl[1];*/
+    int Bl[] = Br_and_Bl[1];
+    for(int i=0;i<=n;i++) {
+        cout << LCP[i];
+    }
+    cout <<"\n\n";
+    cout << "C: " << "\n";
+    int C[256] = {0};
+    compute_C_array(BWT, C);
+    for (int i = 0; i < 256; i++){
+      cout << C[i]<< " ";
+    }
+
+    cout << "\n\n";
+
+    cout << C['A']<< "\n";
+    cout << C['C']<< "\n";
+    cout << C['G']<< "\n";
+    cout << C['T']<< "\n";
 
     return 0;
 }
