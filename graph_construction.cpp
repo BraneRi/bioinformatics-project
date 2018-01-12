@@ -50,6 +50,9 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, De_Bruijn_Node
     bool open = false;
     int counter = 1;
 
+    int counter_Q = 0;
+    char c;
+
     for(int i=2;i<=n;i++) {
         C[BWT[i - 1]]++;
         if (LCP[i] >= k) {
@@ -66,8 +69,43 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, De_Bruijn_Node
                     // TODO: kako se točno stvara jedan čvor i koje argumente gdje prima??
                     De_Bruijn_Node newNode = De_Bruijn_Node(k, lb, i - lb, true);
                     G[counter] = newNode;
+                    Q[counter_Q] = counter;
+                    counter_Q++;
+                    counter++;
                 }
+
+                if (lastdiff > lb) {
+                    for(int j=lb;j<i-1;j++) {
+                        c = BWT[j];
+                        if (c != '#' && c != '$') {
+                            Bl[C[c]] = 1;
+                        }
+                    }
+                }
+
+                open = false;
             }
+            lb = i;
+        }
+
+        if (BWT[i] != BWT[i-1]) {
+            lastdiff = i;
         }
     }
+
+    open = false;
+    for(int i=1;i<n+1;i++) {
+        if (open) {
+            Bl[i] = 0;
+            if (Br[i] == 1) {
+                open = false;
+            }
+        } else if (Br[i] == 1) {
+            Bl[i] = 0;
+            open = true;
+        }
+    }
+
+    Br_and_Bl.push_front(Br);
+    Br_and_Bl.push_back(Bl);
 };
