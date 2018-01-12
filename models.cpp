@@ -1,7 +1,4 @@
-#include <iostream>
-#include <vector>
 #include "models.h"
-using namespace std;
 
 De_Bruijn_Node::De_Bruijn_Node() {
     this->left_boundary = 0;

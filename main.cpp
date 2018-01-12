@@ -7,7 +7,7 @@ using namespace std;
 #include "sais-master/sais.hh"
 #include <algorithm>
 #include <string>
-#include <sdsl/lcp.hpp>
+#include "graph_construction.h"
 
 string parse_input_fasta_file(string filepath) {
     ifstream infile(filepath.c_str());
@@ -37,20 +37,41 @@ string parse_input_fasta_file(string filepath) {
     return S;
 };
 
+
+/**
+ * This change is made because 0 and 1 are 
+ * positioned earlier in alphabet
+ * */
+void prepare_input_string(string parsed_input, int n, char S[]) {
+    size_t length = parsed_input.copy(S, n, 0);
+    S[length] = '\0';
+    for (int i=0;i<n;i++) {
+        if (S[i] == '$') {
+            S[i] = '0';
+        }
+
+        if (S[i] == '#') {
+            S[i] = '1';
+        }
+    }
+}
+
 /**
  * Method uses sais library SAIS (uses SA-iS algorithm)
- * to create suffix array which is used to create BWT by 
+ * to create suffix array
+ * */
+const int* generate_SA(string S) {
+    const char * S_const_char = S.c_str();
+    SAIS* sais = new SAIS(S_const_char);
+    const int* SA = sais->sa();
+    return SA;
+}
+
+/**
+ * Method uses suffix array to create BWT by 
  * formula BWT[i] = S[SA[i] - 1]
  */
-string generate_BWT(string S) {
-    replace( S.begin(), S.end(), '$', '0');
-    replace( S.begin(), S.end(), '#', '1'); 
-
-    const char * S_const_char = S.c_str();
-
-    SAIS sais = SAIS(S_const_char);
-    const int* SA = sais.sa();
-
+string generate_BWT(string S, const int* SA) {
     string BWT = "";
     for(int i=0; i < S.length(); i++) {
         if (SA[i] == 0) {
@@ -71,16 +92,25 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    string S = parse_input_fasta_file(argv[1]);
-    cout << "Parsed input:\n" << S << "\n\n";
+    string parsed_input = parse_input_fasta_file(argv[1]);
+    int n = parsed_input.length();
+    cout << "Parsed input:\n" << parsed_input << "\n\n";
 
-    string BWT = generate_BWT(S);
-    cout << "BWT: \n" << BWT << "\n";
+    char S[n];
+    prepare_input_string(parsed_input, n, S);
+    const int* SA = generate_SA(S);
 
-    lcp_bitcompressed<> lcp;
-    construct_im(lcp, S, 1);
+    string BWT = generate_BWT(S, SA);
+    cout << "BWT: \n" << BWT << "\n\n";
 
-    cout << "LCP=" <<lcp;
+    int LCP[n];
+    compute_LCP_from_SA(SA, S, n, LCP);
+    cout << "LCP: \n";
 
+    for(int i=0;i<=n;i++) {
+        cout << LCP[i];
+    }
+
+    cout << "\n";
     return 0;
 }
