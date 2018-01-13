@@ -119,14 +119,14 @@ int main(int argc, char* argv[]) {
     create_bit_vectors(n, 3, LCP, BWT, G, Q, Br, Bl);
 
     cout << "Br: " << "\n";
-    for(int i=0;i<=n;i++) {
+    for(int i=0;i<n;i++) {
         cout << Br[i];
     }
 
     cout<< "\n";
 
     cout << "Bl: " << "\n";
-    for(int i=0;i<=n;i++) {
+    for(int i=0;i<n;i++) {
         cout << Bl[i];
     }
     cout<< "\n";

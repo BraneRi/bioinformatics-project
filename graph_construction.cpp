@@ -63,7 +63,7 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Br
     int C[256] = {0};
     compute_C_array(BWT, C);
 
-    int lb = 1;
+    int lb = 0;
     int kIndex = 0;
     int lastdiff = 0;
 
@@ -96,7 +96,8 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Br
                     for(int j=lb;j<=i-1;j++) {
                         c = BWT[j];
                         if (c != '#' && c != '$') {
-                            Bl[C[c]] = 1;
+                            cout <<" C[c]  "<< C[c] << "\n";
+                            Bl[C[c] - 1] = 1;
                         }
                     }
                 }
