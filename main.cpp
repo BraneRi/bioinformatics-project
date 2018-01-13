@@ -118,9 +118,6 @@ int main(int argc, char* argv[]) {
 
     create_bit_vectors(n, 3, LCP, BWT, G, Q, Br, Bl);
 
-    cout <<"\n\n";
-    cout << n;
-    cout <<"\n";
     cout << "Br: " << "\n";
     for(int i=0;i<=n;i++) {
         cout << Br[i];
@@ -133,26 +130,6 @@ int main(int argc, char* argv[]) {
         cout << Bl[i];
     }
     cout<< "\n";
-
-
-/*
-    for(int i=0;i<=n;i++) {
-        cout << LCP[i];
-    }
-    cout <<"\n\n";
-    cout << "C: " << "\n";
-    int C[256] = {0};
-    compute_C_array(BWT, C);
-    for (int i = 0; i < 256; i++){
-      cout << C[i]<< " ";
-    }
-
-    cout << "\n\n";
-
-    cout << C['A']<< "\n";
-    cout << C['C']<< "\n";
-    cout << C['G']<< "\n";
-    cout << C['T']<< "\n";*/
 
     return 0;
 }

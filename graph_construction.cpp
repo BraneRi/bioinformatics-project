@@ -37,9 +37,7 @@ void compute_LCP_from_SA(const int* SA, string S, int n, int LCP[]) {
 };
 
 void compute_C_array(string BWT, int C[]){
-
     int K[256] = {0}; // K[0] = $, K[1] = #, K[2] = A, K[3] = C, K[4] = G, K[5] = T
-
 
     for(int i = 0, size = BWT.length(); i < size; i++){
       if(BWT[i] == '$'){
@@ -64,9 +62,6 @@ void compute_C_array(string BWT, int C[]){
 void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Bruijn_Node>& G, queue<int>& Q, int Br[], int Bl[]) {
     int C[256] = {0};
     compute_C_array(BWT, C);
-
-    //int Br[n] = {};
-    //int Bl[n] = {};
 
     int lb = 1;
     int kIndex = 0;
@@ -94,10 +89,11 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Br
                     G[counter] = newNode;
                     Q.push(counter);
 
+                    counter++;
                 }
 
                 if (lastdiff > lb) {
-                    for(int j=lb;j<i-1;j++) {
+                    for(int j=lb;j<=i-1;j++) {
                         c = BWT[j];
                         if (c != '#' && c != '$') {
                             Bl[C[c]] = 1;
@@ -127,7 +123,4 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Br
             open = true;
         }
     }
-
-    //Br_and_Bl.push_front(Br);
-    //Br_and_Bl.push_back(Bl);
 };
