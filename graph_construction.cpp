@@ -124,3 +124,57 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Br
         }
     }
 };
+
+/**
+ * Algorithm 2 from paper which finishes generation of De Brujin graph
+ * */
+void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, De_Bruijn_Node>& G, queue<int>& Q, int Br[], int Bl[]) {
+    int Br[n] = {0};
+    int Bl[n] = {0};
+    create_bit_vectors(n, 3, LCP, BWT, G, Q, Br, Bl);
+
+    int rightMax = rank1(Br, n) / 2;
+    int leftMax = rank1(Bl, n);
+
+    int id;
+    int lb, rb;
+    list list;
+    for(int s=1;s<=d; s++) {
+        id = rightMax + leftMax + s;
+        G[id] = De_Bruijn_Node(1, s, 1, s);
+        Q.push(id);
+        Bl[s] = 0;
+    }
+
+    bool extendable;
+    int ones;
+    int newId;
+    while (!Q.empty()) {
+        // pop je void ??
+        id = Q.pop();
+        do {
+            extendable = false;
+            lb = G[i].size - 1;
+            rb = lb + G[id].size -1;
+            list = getIntervals(lb,rb);
+
+            for(int i=0;i<list.size();i++) {
+                c_i_j_list_element = list[i];
+                ones = rank1(Br, i);
+                if (ones % 2 == 0 && Br[i] = 0) {
+                    if (c_i_j_list_element != '$' && c_i_j_list_element != '#') {
+                        if (list.size() == 1) {
+                            extendable = true;
+                            G[id].length++;
+                            G[id].left_boundary = i;
+                        } else {
+                            newId = rightMax;
+                            G[newId] = De_Bruijn_Node(k, i, j-i+1, i) + rank1(Bl, i-1) + 1;
+                            Q.push(newId);
+                        }
+                    }
+                }
+            }
+        } while(!extendable);
+    }
+}
