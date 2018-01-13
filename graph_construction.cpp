@@ -1,5 +1,7 @@
 #include "graph_construction.h"
-#include<string>
+#include <string>
+#include <map>
+#include <queue>
 /**
  * Kasai et al. algotithm for creating suffix longest common prefix array from
  * suffix array
@@ -59,23 +61,23 @@ void compute_C_array(string BWT, int C[]){
 /**
  * Algorithm 1 from paper which creates two bit vectors Br and Bl
  * */
-void create_bit_vectors(int n, int k, const int* LCP, string BWT, De_Bruijn_Node G[], int Q[], list<int*> Br_and_Bl) {
+void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Bruijn_Node>& G, queue<int>& Q, int Br[], int Bl[]) {
     int C[256] = {0};
     compute_C_array(BWT, C);
 
-    int Br[n] = {};
-    int Bl[n] = {};
+    //int Br[n] = {};
+    //int Bl[n] = {};
 
     int lb = 1;
     int kIndex = 0;
     int lastdiff = 0;
+
     bool open = false;
     int counter = 1;
 
-    int counter_Q = 0;
     char c;
 
-    for(int i=2;i<=n;i++) {
+    for(int i=1; i<=n; i++) {
         C[BWT[i - 1]]++;
         if (LCP[i] >= k) {
             open = true;
@@ -90,9 +92,8 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, De_Bruijn_Node
 
                     De_Bruijn_Node newNode = De_Bruijn_Node(k, lb, i - lb, false);
                     G[counter] = newNode;
-                    Q[counter_Q] = counter;
-                    counter_Q++;
-                    counter++;
+                    Q.push(counter);
+
                 }
 
                 if (lastdiff > lb) {
@@ -115,7 +116,7 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, De_Bruijn_Node
     }
 
     open = false;
-    for(int i=1;i<n+1;i++) {
+    for(int i=0; i<n ;i++) {
         if (open) {
             Bl[i] = 0;
             if (Br[i] == 1) {
@@ -126,7 +127,7 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, De_Bruijn_Node
             open = true;
         }
     }
-  
-    Br_and_Bl.push_front(Br);
-    Br_and_Bl.push_back(Bl);
+
+    //Br_and_Bl.push_front(Br);
+    //Br_and_Bl.push_back(Bl);
 };

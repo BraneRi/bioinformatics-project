@@ -7,6 +7,8 @@ using namespace std;
 #include "sais-master/sais.hh"
 #include <algorithm>
 #include <string>
+#include <map>
+#include <queue>
 #include "graph_construction.h"
 
 
@@ -96,6 +98,7 @@ int main(int argc, char* argv[]) {
     }
 
     string parsed_input = parse_input_fasta_file(argv[1]);
+    cout << parsed_input<<"\n";
     int n = parsed_input.length();
 
     char S[n];
@@ -107,13 +110,32 @@ int main(int argc, char* argv[]) {
     int LCP[n];
     compute_LCP_from_SA(SA, S, n, LCP);
 
-    list<int*> Br_and_Bl;
-    De_Bruijn_Node G[];
-    int Q[];
-    create_bit_vectors(n, 3, LCP, BWT, G, Q, Br_and_Bl);
+    map<int, De_Bruijn_Node> G;
+    queue<int> Q;
 
-    int Br[] = Br_and_Bl[0];
-    int Bl[] = Br_and_Bl[1];
+    int Br[n] = {0};
+    int Bl[n] = {0};
+
+    create_bit_vectors(n, 3, LCP, BWT, G, Q, Br, Bl);
+
+    cout <<"\n\n";
+    cout << n;
+    cout <<"\n";
+    cout << "Br: " << "\n";
+    for(int i=0;i<=n;i++) {
+        cout << Br[i];
+    }
+
+    cout<< "\n";
+
+    cout << "Bl: " << "\n";
+    for(int i=0;i<=n;i++) {
+        cout << Bl[i];
+    }
+    cout<< "\n";
+
+
+/*
     for(int i=0;i<=n;i++) {
         cout << LCP[i];
     }
@@ -130,7 +152,7 @@ int main(int argc, char* argv[]) {
     cout << C['A']<< "\n";
     cout << C['C']<< "\n";
     cout << C['G']<< "\n";
-    cout << C['T']<< "\n";
+    cout << C['T']<< "\n";*/
 
     return 0;
 }
