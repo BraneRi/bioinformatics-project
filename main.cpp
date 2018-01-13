@@ -57,7 +57,7 @@ void prepare_input_string(string parsed_input, int n, char S[]) {
             S[i] = '1';
         }
     }
-}
+};
 
 /**
  * Method uses sais library SAIS (uses SA-iS algorithm)
@@ -68,7 +68,7 @@ const int* generate_SA(string S) {
     SAIS* sais = new SAIS(S_const_char);
     const int* SA = sais->sa();
     return SA;
-}
+};
 
 /**
  * Method uses suffix array to create BWT by
@@ -87,7 +87,7 @@ string generate_BWT(string S, const int* SA) {
     }
 
     return BWT;
-}
+};
 
 
 
@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
 
     map<int, De_Bruijn_Node> G;
     queue<int> Q;
-
+/*
     int Br[n] = {0};
     int Bl[n] = {0};
 
@@ -129,7 +129,9 @@ int main(int argc, char* argv[]) {
     for(int i=0;i<n;i++) {
         cout << Bl[i];
     }
-    cout<< "\n";
+    cout<< "\n";*/
+
+    create_compressed_graph(n, 3, LCP, BWT, G, Q);
 
     return 0;
 }

@@ -85,8 +85,7 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Br
                     Br[lb] = 1;
                     Br[i-1] = 1;
 
-                    De_Bruijn_Node newNode = De_Bruijn_Node(k, lb, i - lb, false);
-                    G[counter] = newNode;
+                    G[counter] = De_Bruijn_Node(k, lb, i - lb, lb);
                     Q.push(counter);
 
                     counter++;
@@ -125,21 +124,39 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Br
     }
 };
 
+int *create_rank_vector(int B_vector[], int n){
+     int *rank = (int*)malloc((n+1)*sizeof(int));
+     rank[0] = 0;
+
+
+     for(int i = 1; i <= n; i++){
+       rank[i] = B_vector[i - 1] + rank[i - 1];
+     }
+
+     return rank;
+}
+
 /**
  * Algorithm 2 from paper which finishes generation of De Brujin graph
  * */
-void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, De_Bruijn_Node>& G, queue<int>& Q, int Br[], int Bl[]) {
+void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, De_Bruijn_Node>& G, queue<int>& Q) {
     int Br[n] = {0};
     int Bl[n] = {0};
-    create_bit_vectors(n, 3, LCP, BWT, G, Q, Br, Bl);
 
-    int rightMax = rank1(Br, n) / 2;
-    int leftMax = rank1(Bl, n);
+    create_bit_vectors(n, 3, LCP, BWT, G, Q, Br, Bl);
+    int *Br_rank = create_rank_vector(Br, n);
+    int *Bl_rank = create_rank_vector(Bl, n);
+    // ukupan broj jedinica između prvih 4 bita -> Bx_rank[4]
+    int rightMax = Br_rank[n] / 2;
+    int leftMax = Bl_rank[n];
+
 
     int id;
     int lb, rb;
-    list list;
-    for(int s=1;s<=d; s++) {
+  //list list;
+
+  /*
+    for(int s=1;s<=5; s++) { // šta je d?!
         id = rightMax + leftMax + s;
         G[id] = De_Bruijn_Node(1, s, 1, s);
         Q.push(id);
@@ -150,8 +167,8 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
     int ones;
     int newId;
     while (!Q.empty()) {
-        // pop je void ??
-        id = Q.pop();
+        id = Q.front();
+        Q.pop();
         do {
             extendable = false;
             lb = G[i].size - 1;
@@ -165,8 +182,8 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
                     if (c_i_j_list_element != '$' && c_i_j_list_element != '#') {
                         if (list.size() == 1) {
                             extendable = true;
-                            G[id].length++;
-                            G[id].left_boundary = i;
+                            G[id].len++;
+                            G[id].lb = i;
                         } else {
                             newId = rightMax;
                             G[newId] = De_Bruijn_Node(k, i, j-i+1, i) + rank1(Bl, i-1) + 1;
@@ -176,5 +193,5 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
                 }
             }
         } while(!extendable);
-    }
+    }*/
 }
