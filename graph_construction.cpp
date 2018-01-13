@@ -96,7 +96,6 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Br
                     for(int j=lb;j<=i-1;j++) {
                         c = BWT[j];
                         if (c != '#' && c != '$') {
-                            cout <<" C[c]  "<< C[c] << "\n";
                             Bl[C[c] - 1] = 1;
                         }
                     }
@@ -113,7 +112,7 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Br
     }
 
     open = false;
-    for(int i=0; i<n ;i++) {
+    for(int i=0; i<=n ;i++) {
         if (open) {
             Bl[i] = 0;
             if (Br[i] == 1) {
