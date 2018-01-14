@@ -12,7 +12,7 @@ using namespace std;
 #include "graph_construction.h"
 
 
-string parse_input_fasta_file(string filepath) {
+string parse_input_fasta_file(string filepath, int* d) {
     ifstream infile(filepath.c_str());
 
     if (!infile.good()) {
@@ -25,6 +25,7 @@ string parse_input_fasta_file(string filepath) {
     while (getline(infile, line)) {
         if (line[0] == '>') {
             S += "#";
+            *d++;
         } else {
             S += line;
         }
@@ -97,7 +98,9 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    string parsed_input = parse_input_fasta_file(argv[1]);
+    // d is number of sequences separated by sign '#'
+    int d = 0;
+    string parsed_input = parse_input_fasta_file(argv[1], &d);
     cout << parsed_input<<"\n";
     int n = parsed_input.length();
 
@@ -112,26 +115,8 @@ int main(int argc, char* argv[]) {
 
     map<int, De_Bruijn_Node> G;
     queue<int> Q;
-/*
-    int Br[n] = {0};
-    int Bl[n] = {0};
 
-    create_bit_vectors(n, 3, LCP, BWT, G, Q, Br, Bl);
-
-    cout << "Br: " << "\n";
-    for(int i=0;i<n;i++) {
-        cout << Br[i];
-    }
-
-    cout<< "\n";
-
-    cout << "Bl: " << "\n";
-    for(int i=0;i<n;i++) {
-        cout << Bl[i];
-    }
-    cout<< "\n";*/
-
-    create_compressed_graph(n, 3, LCP, BWT, G, Q);
+    create_compressed_graph(n, 3, LCP, BWT, G, Q, d);
 
     return 0;
 }

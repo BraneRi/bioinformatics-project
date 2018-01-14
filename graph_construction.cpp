@@ -1,4 +1,5 @@
 #include "graph_construction.h"
+#include <sdsl/wavelet_trees.hpp>
 #include <string>
 #include <map>
 #include <queue>
@@ -128,7 +129,6 @@ int *create_rank_vector(int B_vector[], int n){
      int *rank = (int*)malloc((n+1)*sizeof(int));
      rank[0] = 0;
 
-
      for(int i = 1; i <= n; i++){
        rank[i] = B_vector[i - 1] + rank[i - 1];
      }
@@ -136,49 +136,66 @@ int *create_rank_vector(int B_vector[], int n){
      return rank;
 }
 
+void create_wt(sdsl::wt_blcd<>& wt, int i, int j, char* bwt, int n) {
+
+	std::string tmp(n, 'a'); 
+	for (int k = 1; k <= n + 1; k++) {
+		tmp[k-1] = bwt[k];
+	}
+
+	sdsl::construct_im(wt, tmp, 1);
+} 
+
 /**
  * Algorithm 2 from paper which finishes generation of De Brujin graph
  * */
-void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, De_Bruijn_Node>& G, queue<int>& Q) {
+void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, De_Bruijn_Node>& G, queue<int>& Q, int d) {
     int Br[n] = {0};
     int Bl[n] = {0};
 
     create_bit_vectors(n, 3, LCP, BWT, G, Q, Br, Bl);
     int *Br_rank = create_rank_vector(Br, n);
     int *Bl_rank = create_rank_vector(Bl, n);
-    // ukupan broj jedinica između prvih 4 bita -> Bx_rank[4]
+
+    // total number of ones between 4 bits -> Bx_rank[4]
     int rightMax = Br_rank[n] / 2;
     int leftMax = Bl_rank[n];
 
-
-    int id;
-    int lb, rb;
-  //list list;
-
-  /*
-    for(int s=1;s<=5; s++) { // šta je d?!
+    int id;  
+    for(int s=1;s<=d; s++) {
         id = rightMax + leftMax + s;
         G[id] = De_Bruijn_Node(1, s, 1, s);
         Q.push(id);
         Bl[s] = 0;
     }
 
+    sdsl::wt_blcd<> wt;
+    // there is 6 letters in alphabet
+	create_wt(wt, 0, 5, BWT, n);
+    int size;
+
+	vector<int> chars(wt.sigma);       
+	vector<int> rank_c_i(wt.sigma); // rank of c in [0 .. i-1]
+	vector<int> rank_c_j(wt.sigma); // rank of c in [0 .. j-1]
+    
     bool extendable;
     int ones;
     int newId;
+    list list;
+    int lb, rb;
     while (!Q.empty()) {
         id = Q.front();
         Q.pop();
         do {
             extendable = false;
-            lb = G[i].size - 1;
+            lb = G[id].size - 1;
             rb = lb + G[id].size -1;
-            list = getIntervals(lb,rb);
+            sdsl::interval_symbols(wt,lb,rb+1,size,chars,rank_c_i,rank_c_j);
 
-            for(int i=0;i<list.size();i++) {
+            for(int i=0;i<size;i++) {
                 c_i_j_list_element = list[i];
-                ones = rank1(Br, i);
-                if (ones % 2 == 0 && Br[i] = 0) {
+                ones = create_rank_vector(Br, i);
+                if (ones % 2 == 0 && Br[i] == 0) {
                     if (c_i_j_list_element != '$' && c_i_j_list_element != '#') {
                         if (list.size() == 1) {
                             extendable = true;
@@ -186,12 +203,12 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
                             G[id].lb = i;
                         } else {
                             newId = rightMax;
-                            G[newId] = De_Bruijn_Node(k, i, j-i+1, i) + rank1(Bl, i-1) + 1;
+                            G[newId] = De_Bruijn_Node(k, i, j-i+1, i) + create_rank_vector(Bl, i-1) + 1;
                             Q.push(newId);
                         }
                     }
                 }
             }
-        } while(!extendable);
-    }*/
+        } while(extendable);
+    }
 }
