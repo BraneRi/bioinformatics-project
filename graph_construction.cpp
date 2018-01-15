@@ -60,16 +60,15 @@ void compute_C_array(string BWT, int C[]){
 /**
  * Algorithm 1 from paper which creates two bit vectors Br and Bl
  * */
-void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Bruijn_Node>& G, queue<int>& Q, int Br[], int Bl[]) {
-    int C[256] = {0};
+void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Bruijn_Node>& G, queue<int>& Q, int Br[], int Bl[], int C[]) {
     compute_C_array(BWT, C);
 
-    int lb = 0;
+    int lb = 1;
     int kIndex = 0;
     int lastdiff = 0;
 
     bool open = false;
-    int counter = 1;
+    int counter = 0;
 
     char c;
 
@@ -88,7 +87,6 @@ void create_bit_vectors(int n, int k, const int* LCP, string BWT, map<int, De_Br
 
                     G[counter] = De_Bruijn_Node(k, lb, i - lb, lb);
                     Q.push(counter);
-
                     counter++;
                 }
 
@@ -146,6 +144,18 @@ void create_wt(sdsl::wt_blcd<>& wt, int i, int j, char* bwt, int n) {
 	sdsl::construct_im(wt, tmp, 1);
 } 
 
+void printGraph(map<int, De_Bruijn_Node>& G) {
+    for (auto it = G.begin(); it != G.end(); ++it) {
+        cout << "  id:  " << it->first;
+        cout << "  len: "<< it->second.len;
+        cout << "  lb: " << it->second.lb;
+        cout << "  size: " << it->second.size;
+        cout << "  suff_lb: " << it->second.suffix_lb << "\n";
+    }
+
+    cout << "\n";
+};
+
 /**
  * Algorithm 2 from paper which finishes generation of De Brujin graph
  * */
@@ -153,57 +163,78 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
     int Br[n] = {0};
     int Bl[n] = {0};
 
-    create_bit_vectors(n, 3, LCP, BWT, G, Q, Br, Bl);
+    int C[256] = {0};
+    create_bit_vectors(n, 3, LCP, BWT, G, Q, Br, Bl, C);
+
+    cout << "Nakon Prvog\n";
+    printGraph(G);
+    cout << "\n";
+
     int *Br_rank = create_rank_vector(Br, n);
     int *Bl_rank = create_rank_vector(Bl, n);
 
-    // total number of ones between 4 bits -> Bx_rank[4]
+    // total number of ones between 4 bits -> Br_rank[4]
     int rightMax = Br_rank[n] / 2;
     int leftMax = Bl_rank[n];
-
     int id;  
-    for(int s=1;s<=d; s++) {
+    
+    for(int s=0;s<d; s++) {
         id = rightMax + leftMax + s;
         G[id] = De_Bruijn_Node(1, s, 1, s);
+
+        //cout << "id: " << id << "\n";
+        //printGraph(G);
         Q.push(id);
         Bl[s] = 0;
     }
 
     sdsl::wt_blcd<> wt;
     // there is 6 letters in alphabet
-	create_wt(wt, 0, 5, BWT, n);
-    int size;
+    std::string str = "string";
+    char *bwt = new char[BWT.length() + 1];
+    strcpy(bwt, BWT.c_str());
 
-	vector<int> chars(wt.sigma);       
-	vector<int> rank_c_i(wt.sigma); // rank of c in [0 .. i-1]
-	vector<int> rank_c_j(wt.sigma); // rank of c in [0 .. j-1]
+	create_wt(wt, 0, 5, bwt, n);
+    uint64_t size;
+
+	vector<uint8_t> chars(wt.sigma);       
+	vector<uint64_t> rank_c_i(wt.sigma); // rank of c in [0 .. i-1]
+	vector<uint64_t> rank_c_j(wt.sigma); // rank of c in [0 .. j-1]
     
     bool extendable;
     int ones;
     int newId;
-    list list;
     int lb, rb;
+    int c,i,j;
     while (!Q.empty()) {
         id = Q.front();
+        //cout << "id " << id << "\n";
+
         Q.pop();
         do {
             extendable = false;
             lb = G[id].size - 1;
-            rb = lb + G[id].size -1;
+            rb = lb + G[id].size - 1;
             sdsl::interval_symbols(wt,lb,rb+1,size,chars,rank_c_i,rank_c_j);
-
-            for(int i=0;i<size;i++) {
-                c_i_j_list_element = list[i];
-                ones = create_rank_vector(Br, i);
-                if (ones % 2 == 0 && Br[i] == 0) {
-                    if (c_i_j_list_element != '$' && c_i_j_list_element != '#') {
-                        if (list.size() == 1) {
+            for(int interval=0;interval<size;interval++) {
+                c = chars[interval];
+                i = C[c] + rank_c_i[interval];
+                j = C[c] + rank_c_j[interval] - 1;
+                //cout << "i " << i << "    Br_rank[i]   " << Br_rank[i] + 2 << "\n";
+                ones = Br_rank[i+1];
+                if (ones % 2 == 0 && Br[i+1] == 0) {
+                    if (c != '$' && c != '#') {
+                        if (size == 1) {
                             extendable = true;
                             G[id].len++;
                             G[id].lb = i;
+        
                         } else {
-                            newId = rightMax;
-                            G[newId] = De_Bruijn_Node(k, i, j-i+1, i) + create_rank_vector(Bl, i-1) + 1;
+                            //cout << "rightMax:  " << rightMax<< "\n";
+                            //cout << "blrank[i]  "<< Bl_rank[i] << "  i:  "<< i << "\n";
+                            newId = rightMax + Bl_rank[i] + 1;
+                            G[newId] = De_Bruijn_Node(k, i, j-i+1, i);
+                            //cout << "tu sam" << "\n";
                             Q.push(newId);
                         }
                     }

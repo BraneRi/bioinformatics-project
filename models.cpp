@@ -7,7 +7,7 @@ De_Bruijn_Node::De_Bruijn_Node() {
   this->suffix_lb = 0;
 };
 
-De_Bruijn_Node::De_Bruijn_Node(int len, int lb, int size, bool suffix_lb) {
+De_Bruijn_Node::De_Bruijn_Node(int len, int lb, int size, int suffix_lb) {
     this->len = len;
     this->lb = lb;
     this->size = size;

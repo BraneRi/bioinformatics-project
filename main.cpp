@@ -90,8 +90,6 @@ string generate_BWT(string S, const int* SA) {
     return BWT;
 };
 
-
-
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         cerr << "Please provide following argument: <FILE.fasta> ";
@@ -99,7 +97,7 @@ int main(int argc, char* argv[]) {
     }
 
     // d is number of sequences separated by sign '#'
-    int d = 0;
+    int d = 3;
     string parsed_input = parse_input_fasta_file(argv[1], &d);
     cout << parsed_input<<"\n";
     int n = parsed_input.length();
@@ -118,5 +116,6 @@ int main(int argc, char* argv[]) {
 
     create_compressed_graph(n, 3, LCP, BWT, G, Q, d);
 
+    printGraph(G);
     return 0;
 }
