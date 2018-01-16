@@ -97,7 +97,8 @@ int main(int argc, char* argv[]) {
 
     // d is number of sequences separated by sign '#'
     int d = 0;
-    string parsed_input = parse_input_fasta_file(argv[1], d);
+    string filepath = argv[1];
+    string parsed_input = parse_input_fasta_file(filepath, d);
 
     int n = parsed_input.length();
     char S[n];
@@ -113,8 +114,10 @@ int main(int argc, char* argv[]) {
     map<int, De_Bruijn_Node> G;
     queue<int> Q;
 
-  create_compressed_graph(n, 3, LCP, BWT, G, Q, d);
+    create_compressed_graph(n, 3, LCP, BWT, G, Q, d);
 	delete sais;
-  printGraph(G);
+
+    string output_file = filepath + ".out";
+    printGraph(G, output_file);
     return 0;
 }

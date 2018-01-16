@@ -3,6 +3,8 @@
 #include <string>
 #include <map>
 #include <queue>
+#include <iostream>
+#include <fstream>
 /**
  * Kasai et al. algotithm for creating suffix longest common prefix array from
  * suffix array
@@ -144,7 +146,7 @@ void create_wt(sdsl::wt_blcd<>& wt, int i, int j, char* bwt, int n) {
 	sdsl::construct_im(wt, tmp, 1);
 }
 
-void printGraph(map<int, De_Bruijn_Node>& G) {
+/*void printGraph(map<int, De_Bruijn_Node>& G) {
     for (auto it = G.begin(); it != G.end(); ++it) {
         cout << "  id:  " << it->first;
         cout << "  len: "<< it->second.len;
@@ -154,6 +156,23 @@ void printGraph(map<int, De_Bruijn_Node>& G) {
     }
 
     cout << "\n";
+};*/
+
+void printGraph(map<int, De_Bruijn_Node>& G, string output_file) {
+    ofstream output;
+    output.open(output_file);
+    if (!output.is_open()) {
+        cerr << "NE mogu otvorit";
+    }
+    for (auto it = G.begin(); it != G.end(); ++it) {
+        output << it->second.len << " ";
+        output << it->second.lb << " ";
+        output << it->second.size << " ";
+        output << it->second.suffix_lb << "\n";
+    }
+    output << std::endl;
+    output.close();
+    cout << "Output saved in " << output_file << "\n";
 };
 
 /**
@@ -198,7 +217,7 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
 	vector<uint8_t> chars(wt.sigma);
 	vector<uint64_t> rank_c_i(wt.sigma); // rank of c in [0 .. i-1]
 	vector<uint64_t> rank_c_j(wt.sigma); // rank of c in [0 .. j-1]
-  uint64_t size;
+    uint64_t size;
 
     bool extendable;
     int ones;
@@ -213,7 +232,7 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
             extendable = false;
             lb = G[id].lb;
             rb = lb + G[id].size - 1;
-            sdsl::interval_symbols(wt,lb,rb+1,size,chars,rank_c_i,rank_c_j);
+            sdsl::interval_symbols(wt,lb,rb+    1,size,chars,rank_c_i,rank_c_j);
 
             for(int interval=0;interval<size;interval++) {
                 c = chars[interval];
