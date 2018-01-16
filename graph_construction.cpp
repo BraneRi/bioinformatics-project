@@ -136,13 +136,13 @@ int *create_rank_vector(int B_vector[], int n){
 
 void create_wt(sdsl::wt_blcd<>& wt, int i, int j, char* bwt, int n) {
 
-	std::string tmp(n, 'a'); 
+	std::string tmp(n, 'a');
 	for (int k = 1; k <= n + 1; k++) {
 		tmp[k-1] = bwt[k];
 	}
 
 	sdsl::construct_im(wt, tmp, 1);
-} 
+}
 
 void printGraph(map<int, De_Bruijn_Node>& G) {
     for (auto it = G.begin(); it != G.end(); ++it) {
@@ -166,6 +166,20 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
     int C[256] = {0};
     create_bit_vectors(n, 3, LCP, BWT, G, Q, Br, Bl, C);
 
+/*
+    cout << "C[$]  " << C[0] << "\n";
+    cout << "C[#]  " << C[1] << "\n";
+
+    cout << "C[A]  " << C['A' - 1] << "\n";
+    cout << "C[C]  " << C['C' - 1] << "\n";
+    cout << "C[G]  " << C['G' - 1] << "\n";
+    cout << "C[T]  " << C['T' - 1] << "\n";
+
+    for (int i = 0; i < 256; i++){
+      cout << C[i] << "   ";
+    }
+    */
+cout <<"\n";
     cout << "Nakon Prvog\n";
     printGraph(G);
     cout << "\n";
@@ -176,8 +190,8 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
     // total number of ones between 4 bits -> Br_rank[4]
     int rightMax = Br_rank[n] / 2;
     int leftMax = Bl_rank[n];
-    int id;  
-    
+    int id;
+
     for(int s=0;s<d; s++) {
         id = rightMax + leftMax + s;
         G[id] = De_Bruijn_Node(1, s, 1, s);
@@ -188,19 +202,37 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
         Bl[s] = 0;
     }
 
+
+
     sdsl::wt_blcd<> wt;
     // there is 6 letters in alphabet
     std::string str = "string";
     char *bwt = new char[BWT.length() + 1];
-    strcpy(bwt, BWT.c_str());
 
+    for(int i = 1; i < BWT.length() + 1; i++){
+      bwt[i] = BWT[i-1];
+    }
+
+  /*  std::cout << "bwt" << "\n";
+  for(int i = 0; i < n; i++){
+    std::cout << bwt[i] << "  ";
+  }
+
+  std::cout << "\n"<< "bwtover" << "\n";
+*/
 	create_wt(wt, 0, 5, bwt, n);
-    uint64_t size;
+/*  std::cout << "wt"<< "\n";
+  for(int i = 0; i < wt.size(); i++){
+    std::cout << wt[i];
+  }
+  std::cout << "\n" <<"wtover"<< "\n";
+  return;*/
 
-	vector<uint8_t> chars(wt.sigma);       
+	vector<uint8_t> chars(wt.sigma);
 	vector<uint64_t> rank_c_i(wt.sigma); // rank of c in [0 .. i-1]
 	vector<uint64_t> rank_c_j(wt.sigma); // rank of c in [0 .. j-1]
-    
+  uint64_t size;
+
     bool extendable;
     int ones;
     int newId;
@@ -208,31 +240,59 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
     int c,i,j;
     while (!Q.empty()) {
         id = Q.front();
-        //cout << "id " << id << "\n";
+        cout << "\n";
+        cout << "nova iteracija id " << id << "\n";
 
         Q.pop();
         do {
             extendable = false;
-            lb = G[id].size - 1;
+            lb = G[id].lb;
             rb = lb + G[id].size - 1;
             sdsl::interval_symbols(wt,lb,rb+1,size,chars,rank_c_i,rank_c_j);
+
+            std::cout << "lb " << lb << "\n";
+            std::cout << "rb " << rb << "\n";
+            std::cout << "size " << size << "\n";
+            for(int i = 0; i < chars.size(); i++){
+              std::cout << chars[i] << "  ";
+            }
+            std::cout << "\n";
+
+            for(int i = 0; i < rank_c_i.size(); i++){
+              std::cout << rank_c_i[i] << "  ";
+            }
+            std::cout << "\n";
+
+            for(int i = 0; i < rank_c_j.size(); i++){
+              std::cout << rank_c_j[i] << "  ";
+            }
+            std::cout << "\n";
+
+
             for(int interval=0;interval<size;interval++) {
                 c = chars[interval];
-                i = C[c] + rank_c_i[interval];
-                j = C[c] + rank_c_j[interval] - 1;
-                //cout << "i " << i << "    Br_rank[i]   " << Br_rank[i] + 2 << "\n";
+                cout << "c: " << c << "\n";
+                cout << "C[c]  " << C[c - 1] << "\n";
+                cout << "rank_c_i[interval]: " <<rank_c_i[interval] << "\n";
+                cout << "rank_c_j[interval]: " <<rank_c_j[interval] << "\n";
+
+                i = C[c - 1] + rank_c_i[interval];
+                j = C[c - 1] + rank_c_j[interval] - 1;
+                cout << "interval: " << interval << " i: " << i << " j: " << j<< "\n";
                 ones = Br_rank[i+1];
+
+                std::cout << "ones  " << ones << "\n";
                 if (ones % 2 == 0 && Br[i+1] == 0) {
                     if (c != '$' && c != '#') {
                         if (size == 1) {
                             extendable = true;
                             G[id].len++;
                             G[id].lb = i;
-        
+
                         } else {
                             //cout << "rightMax:  " << rightMax<< "\n";
                             //cout << "blrank[i]  "<< Bl_rank[i] << "  i:  "<< i << "\n";
-                            newId = rightMax + Bl_rank[i] + 1;
+                            newId = rightMax + Bl_rank[i];
                             G[newId] = De_Bruijn_Node(k, i, j-i+1, i);
                             //cout << "tu sam" << "\n";
                             Q.push(newId);
