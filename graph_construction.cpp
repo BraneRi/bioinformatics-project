@@ -282,7 +282,7 @@ cout <<"\n";
                 ones = Br_rank[i+1];
 
                 std::cout << "ones  " << ones << "\n";
-                if (ones % 2 == 0 && Br[i+1] == 0) {
+                if (ones % 2 == 0 && Br[i] == 0) {
                     if (c != '$' && c != '#') {
                         if (size == 1) {
                             extendable = true;
