@@ -64,11 +64,10 @@ void prepare_input_string(string parsed_input, int n, char S[]) {
  * Method uses sais library SAIS (uses SA-iS algorithm)
  * to create suffix array
  * */
-const int* generate_SA(string S) {
+SAIS* generate_SA(string S) {
     const char * S_const_char = S.c_str();
     SAIS* sais = new SAIS(S_const_char);
-    const int* SA = sais->sa();
-    return SA;
+    return sais;
 };
 
 /**
@@ -102,7 +101,8 @@ int main(int argc, char* argv[]) {
     int n = parsed_input.length();
     char S[n];
     prepare_input_string(parsed_input, n, S);
-    const int* SA = generate_SA(S);
+    SAIS* sais = generate_SA(S);
+    const int* SA = sais->sa();
 
     string BWT = generate_BWT(S, SA);
 
@@ -112,8 +112,8 @@ int main(int argc, char* argv[]) {
     map<int, De_Bruijn_Node> G;
     queue<int> Q;
 
-    create_compressed_graph(n, 3, LCP, BWT, G, Q, d);
-
-    //printGraph(G);
+  create_compressed_graph(n, 3, LCP, BWT, G, Q, d);
+	delete sais;
+  printGraph(G);
     return 0;
 }
