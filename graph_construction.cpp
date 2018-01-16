@@ -238,5 +238,9 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
                 }
             }
         } while(extendable);
+
+
     }
+
+    delete bwt;
 }
