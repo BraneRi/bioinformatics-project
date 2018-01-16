@@ -99,9 +99,7 @@ int main(int argc, char* argv[]) {
     // d is number of sequences separated by sign '#'
     int d = 3;
     string parsed_input = parse_input_fasta_file(argv[1], &d);
-    cout << parsed_input<<"\n";
     int n = parsed_input.length();
-    cout << "parsedinput" << parsed_input << "\n";
     char S[n];
     prepare_input_string(parsed_input, n, S);
     const int* SA = generate_SA(S);
@@ -116,6 +114,6 @@ int main(int argc, char* argv[]) {
 
     create_compressed_graph(n, 3, LCP, BWT, G, Q, d);
 
-    printGraph(G);
+    //printGraph(G);
     return 0;
 }
