@@ -181,8 +181,8 @@ void printGraph(map<int, De_Bruijn_Node>& G) {
  * Algorithm 2 from paper which finishes generation of De Brujin graph
  * */
 void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, De_Bruijn_Node>& G, queue<int>& Q, int d) {
-    int *Br = new int[n];
-    int *Bl = new int[n];
+    int *Br = new int[n]();
+    int *Bl = new int[n]();
 
     int C[256] = {0};
     create_bit_vectors(n, k, LCP, BWT, G, Q, Br, Bl, C);
