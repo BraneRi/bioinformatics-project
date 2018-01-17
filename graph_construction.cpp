@@ -146,18 +146,6 @@ void create_wt(sdsl::wt_blcd<>& wt, int i, int j, char* bwt, int n) {
 	sdsl::construct_im(wt, tmp, 1);
 }
 
-/*void printGraph(map<int, De_Bruijn_Node>& G) {
-    for (auto it = G.begin(); it != G.end(); ++it) {
-        cout << "  id:  " << it->first;
-        cout << "  len: "<< it->second.len;
-        cout << "  lb: " << it->second.lb;
-        cout << "  size: " << it->second.size;
-        cout << "  suff_lb: " << it->second.suffix_lb << "\n";
-    }
-
-    cout << "\n";
-};*/
-
 void printGraph(map<int, De_Bruijn_Node>& G, string output_file) {
     ofstream output;
     output.open(output_file);
@@ -175,6 +163,20 @@ void printGraph(map<int, De_Bruijn_Node>& G, string output_file) {
     cout << "Output saved in " << output_file << "\n";
 };
 
+/*
+void printGraph(map<int, De_Bruijn_Node>& G) {
+    for (auto it = G.begin(); it != G.end(); ++it) {
+        cout << "  id:  " << it->first;
+        cout << "  len: "<< it->second.len;
+        cout << "  lb: " << it->second.lb;
+        cout << "  size: " << it->second.size;
+        cout << "  suff_lb: " << it->second.suffix_lb << "\n";
+    }
+
+    cout << "\n";
+};
+*/
+
 /**
  * Algorithm 2 from paper which finishes generation of De Brujin graph
  * */
@@ -183,7 +185,7 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
     int *Bl = new int[n];
 
     int C[256] = {0};
-    create_bit_vectors(n, 3, LCP, BWT, G, Q, Br, Bl, C);
+    create_bit_vectors(n, k, LCP, BWT, G, Q, Br, Bl, C);
 
     int *Br_rank = create_rank_vector(Br, n);
     int *Bl_rank = create_rank_vector(Bl, n);
@@ -203,7 +205,6 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
 
 
     sdsl::wt_blcd<> wt;
-    std::string str = "string";
     char *bwt = new char[BWT.length() + 1];
 
     for(int i = 1; i < BWT.length() + 1; i++){

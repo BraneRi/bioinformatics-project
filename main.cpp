@@ -12,7 +12,7 @@ using namespace std;
 #include "graph_construction.h"
 
 
-string parse_input_fasta_file(string filepath, int &d) {
+string parse_input_fasta_file(string filepath, int *d) {
     ifstream infile(filepath.c_str());
 
     if (!infile.good()) {
@@ -25,7 +25,7 @@ string parse_input_fasta_file(string filepath, int &d) {
     while (getline(infile, line)) {
         if (line[0] == '>') {
             S += "#";
-            d++;
+            *d += 1;
         } else {
             S += line;
         }
@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
     // d is number of sequences separated by sign '#'
     int d = 0;
     string filepath = argv[1];
-    string parsed_input = parse_input_fasta_file(filepath, d);
+    string parsed_input = parse_input_fasta_file(filepath, &d);
 
     int n = parsed_input.length();
     char S[n];
