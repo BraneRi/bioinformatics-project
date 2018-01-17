@@ -179,8 +179,8 @@ void printGraph(map<int, De_Bruijn_Node>& G, string output_file) {
  * Algorithm 2 from paper which finishes generation of De Brujin graph
  * */
 void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, De_Bruijn_Node>& G, queue<int>& Q, int d) {
-    int Br[n] = {0};
-    int Bl[n] = {0};
+    int *Br = new int[n];
+    int *Bl = new int[n];
 
     int C[256] = {0};
     create_bit_vectors(n, 3, LCP, BWT, G, Q, Br, Bl, C);
@@ -215,8 +215,8 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
 
 
 	vector<uint8_t> chars(wt.sigma);
-	vector<uint64_t> rank_c_i(wt.sigma); // rank of c in [0 .. i-1]
-	vector<uint64_t> rank_c_j(wt.sigma); // rank of c in [0 .. j-1]
+	vector<uint64_t> rank_c_i(wt.sigma);
+	vector<uint64_t> rank_c_j(wt.sigma);
     uint64_t size;
 
     bool extendable;
@@ -232,7 +232,7 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
             extendable = false;
             lb = G[id].lb;
             rb = lb + G[id].size - 1;
-            sdsl::interval_symbols(wt,lb,rb+    1,size,chars,rank_c_i,rank_c_j);
+            sdsl::interval_symbols(wt,lb,rb+1,size,chars,rank_c_i,rank_c_j);
 
             for(int interval=0;interval<size;interval++) {
                 c = chars[interval];
@@ -247,7 +247,6 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
                             extendable = true;
                             G[id].len++;
                             G[id].lb = i;
-
                         } else {
                             newId = rightMax + Bl_rank[i];
                             G[newId] = De_Bruijn_Node(k, i, j-i+1, i);
@@ -262,4 +261,8 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
     }
 
     delete bwt;
+    delete Br;
+    delete Bl;
+    delete Br_rank;
+    delete Bl_rank;
 }
