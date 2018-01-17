@@ -1,0 +1,45 @@
+Output saved in input_output_files/input_0.fa.out
+File size: 541 B
+Elapsed time for input_output_files/input_0.fa: 0.00132296 s
+Memory usage: 4024 kb
+
+Output saved in input_output_files/input_1.fa.out
+File size: 1,4 kB
+Elapsed time for input_output_files/input_1.fa: 0.00156302 s
+Memory usage: 4212 kb
+
+Output saved in input_output_files/input_2.fa.out
+File size: 1,2 kb
+Elapsed time for input_output_files/input_2.fa: 0.00144425 s
+Memory usage: 4176 kb
+
+Output saved in input_output_files/input_3.fa.out
+File size: 1,4 kb
+Elapsed time for input_output_files/input_3.fa: 0.0015086 s
+Memory usage: 4244 kb
+
+Output saved in input_output_files/input_4.fa.out
+File size: 1,9 kb
+Elapsed time for input_output_files/input_4.fa: 0.00159076 s
+Memory usage: 4176 kb
+
+Output saved in input_output_files/input_5.fa.out
+File size: 50kb
+Elapsed time for input_output_files/input_5.fa: 0.00773954 s
+Memory usage: 5928 kb
+
+Output saved in input_output_files/input_6.fa.out
+File size: 47,8 kb
+Elapsed time for input_output_files/input_6.fa: 0.00714396 s
+Memory usage: 5828 kb
+
+Output saved in input_output_files/input_8.fa.out
+File size: 863,9 kb
+Elapsed time for input_output_files/input_8.fa: 0.13123 s
+Memory usage: 35348 kb
+
+Output saved in input_output_files/input_9.fa.out
+File size: 773,1 kb
+Elapsed time for input_output_files/input_9.fa: 0.116435 s
+Memory usage: 32388 kb
+

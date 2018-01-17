@@ -181,8 +181,8 @@ void printGraph(map<int, De_Bruijn_Node>& G) {
  * Algorithm 2 from paper which finishes generation of De Brujin graph
  * */
 void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, De_Bruijn_Node>& G, queue<int>& Q, int d) {
-    int *Br = new int[n]();
-    int *Bl = new int[n]();
+    int *Br = new int[n + 1]();
+    int *Bl = new int[n + 1]();
 
     int C[256] = {0};
     create_bit_vectors(n, k, LCP, BWT, G, Q, Br, Bl, C);
@@ -229,10 +229,10 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
         id = Q.front();
         Q.pop();
 
+        lb = G[id].lb;
+        rb = lb + G[id].size - 1;
         do {
             extendable = false;
-            lb = G[id].lb;
-            rb = lb + G[id].size - 1;
             sdsl::interval_symbols(wt,lb,rb+1,size,chars,rank_c_i,rank_c_j);
 
             for(int interval=0;interval<size;interval++) {
@@ -248,7 +248,10 @@ void create_compressed_graph(int n, int k, const int* LCP, string BWT, map<int, 
                             extendable = true;
                             G[id].len++;
                             G[id].lb = i;
+                            lb = i;
+                            rb = j;
                         } else {
+                            G[id].lb = lb;
                             newId = rightMax + Bl_rank[i];
                             G[newId] = De_Bruijn_Node(k, i, j-i+1, i);
                             Q.push(newId);

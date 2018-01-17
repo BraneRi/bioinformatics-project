@@ -9,9 +9,13 @@ using namespace std;
 #include <string>
 #include <map>
 #include <queue>
+#include <chrono> 
 #include "graph_construction.h"
 
-
+/**
+ * Method parses inout file to get string whcich concatenates
+ * all sequences
+ * */
 string parse_input_fasta_file(string filepath, int *d) {
     ifstream infile(filepath.c_str());
 
@@ -95,6 +99,8 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    auto start = std::chrono::high_resolution_clock::now();
+
     // d is number of sequences separated by sign '#'
     int d = 0;
     string filepath = argv[1];
@@ -119,5 +125,10 @@ int main(int argc, char* argv[]) {
 
     string output_file = filepath + ".out";
     printGraph(G, output_file);
+
+    auto finish = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double> elapsed = finish - start;
+    std::cout << "Elapsed time for " << filepath << ": " << elapsed.count() << " s\n";
     return 0;
 }
